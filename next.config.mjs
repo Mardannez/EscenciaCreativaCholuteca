@@ -1,46 +1,22 @@
+import { imageHosts } from './image-hosts.config.mjs';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   productionBrowserSourceMaps: true,
   distDir: process.env.DIST_DIR || '.next',
 
   typescript: {
-      ignoreBuildErrors: true,
-    },
+    ignoreBuildErrors: true,
+  },
 
   eslint: {
     ignoreDuringBuilds: true,
   },
 
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'images.pexels.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'images.pixabay.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'img.rocket.new',
-      },
-    ],
-  },
-
-  async redirects() {
-    return [
-      {
-        source: '/',
-        destination: '/homepage',
-        permanent: false,
-      },
-    ];
+    remotePatterns: imageHosts,
+    minimumCacheTTL: 60,
+    qualities: [75, 85, 100],
   }
 };
-
 export default nextConfig;

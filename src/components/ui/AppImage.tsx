@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo, memo } from 'react';
 import Image from 'next/image';
 
 interface AppImageProps {
@@ -17,110 +17,91 @@ interface AppImageProps {
     sizes?: string;
     onClick?: () => void;
     fallbackSrc?: string;
+    loading?: 'lazy' | 'eager';
+    unoptimized?: boolean;
     [key: string]: any;
 }
 
-function AppImage({
+const AppImage = memo(function AppImage({
     src,
     alt,
     width,
     height,
     className = '',
     priority = false,
-    quality = 75,
+    quality = 85,
     placeholder = 'empty',
     blurDataURL,
     fill = false,
     sizes,
     onClick,
     fallbackSrc = '/assets/images/no_image.png',
+    loading = 'lazy',
+    unoptimized = false,
     ...props
 }: AppImageProps) {
     const [imageSrc, setImageSrc] = useState(src);
     const [isLoading, setIsLoading] = useState(true);
     const [hasError, setHasError] = useState(false);
 
-    // More reliable external URL detection
-    const isExternal = imageSrc.startsWith('http://') || imageSrc.startsWith('https://');
-    const isLocal = imageSrc.startsWith('/') || imageSrc.startsWith('./') || imageSrc.startsWith('data:');
+    const isExternalUrl = useMemo(() => typeof imageSrc === 'string' && imageSrc.startsWith('http'), [imageSrc]);
+    const resolvedUnoptimized = unoptimized || isExternalUrl;
 
-    const handleError = () => {
+    const handleError = useCallback(() => {
         if (!hasError && imageSrc !== fallbackSrc) {
             setImageSrc(fallbackSrc);
             setHasError(true);
         }
         setIsLoading(false);
-    };
+    }, [hasError, imageSrc, fallbackSrc]);
 
-    const handleLoad = () => {
+    const handleLoad = useCallback(() => {
         setIsLoading(false);
         setHasError(false);
-    };
+    }, []);
 
-    const commonClassName = `${className} ${isLoading ? 'bg-gray-200' : ''} ${onClick ? 'cursor-pointer hover:opacity-90 transition-opacity' : ''}`;
+    const imageClassName = useMemo(() => {
+        const classes = [className];
+        if (isLoading) classes.push('bg-gray-200');
+        if (onClick) classes.push('cursor-pointer hover:opacity-90 transition-opacity duration-200');
+        return classes.filter(Boolean).join(' ');
+    }, [className, isLoading, onClick]);
 
-    // For external URLs or when in doubt, use regular img tag
-    if (isExternal && !isLocal) {
-        const imgStyle: React.CSSProperties = {};
+    const imageProps = useMemo(() => {
+        const baseProps: any = {
+            src: imageSrc,
+            alt,
+            className: imageClassName,
+            quality,
+            placeholder,
+            unoptimized: resolvedUnoptimized,
+            onError: handleError,
+            onLoad: handleLoad,
+            onClick,
+        };
 
-        if (width) imgStyle.width = width;
-        if (height) imgStyle.height = height;
-
-        if (fill) {
-            return (
-                <div className={`relative ${className}`} style={{ width: width || '100%', height: height || '100%' }}>
-                    <img
-                        src={imageSrc}
-                        alt={alt}
-                        className={`${commonClassName} absolute inset-0 w-full h-full object-cover`}
-                        onError={handleError}
-                        onLoad={handleLoad}
-                        onClick={onClick}
-                        style={imgStyle}
-                        {...props}
-                    />
-                </div>
-            );
+        if (priority) {
+            baseProps.priority = true;
+        } else {
+            baseProps.loading = loading;
         }
 
-        return (
-            <img
-                src={imageSrc}
-                alt={alt}
-                className={commonClassName}
-                onError={handleError}
-                onLoad={handleLoad}
-                onClick={onClick}
-                style={imgStyle}
-                {...props}
-            />
-        );
-    }
+        if (blurDataURL && placeholder === 'blur') {
+            baseProps.blurDataURL = blurDataURL;
+        }
 
-    // For local images and data URLs, use Next.js Image component
-    const imageProps = {
-        src: imageSrc,
-        alt,
-        className: commonClassName,
-        priority,
-        quality,
-        placeholder,
-        blurDataURL,
-        unoptimized: true,
-        onError: handleError,
-        onLoad: handleLoad,
-        onClick,
-        ...props,
-    };
+        return baseProps;
+    }, [imageSrc, alt, imageClassName, quality, placeholder, blurDataURL, resolvedUnoptimized, priority, loading, handleError, handleLoad, onClick]);
 
     if (fill) {
         return (
-            <div className={`relative ${className}`}>
+            <div className="relative" style={{ width: '100%', height: '100%' }}>
                 <Image
                     {...imageProps}
                     fill
-                    sizes={sizes || '100vw'}
+                    sizes={sizes || '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'}
                     style={{ objectFit: 'cover' }}
+                    {...props}
                 />
             </div>
         );
@@ -131,8 +112,12 @@ function AppImage({
             {...imageProps}
             width={width || 400}
             height={height || 300}
+            sizes={sizes}
+            {...props}
         />
     );
-}
+});
+
+AppImage.displayName = 'AppImage';
 
 export default AppImage;

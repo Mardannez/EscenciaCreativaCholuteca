@@ -1,133 +1,83 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: ["class"],
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
+    './src/**/*.{js,ts,jsx,tsx,mdx}',
   ],
-  prefix: "",
+  darkMode: 'class',
   theme: {
     container: {
       center: true,
-      padding: "2rem",
-      screens: {
-        "2xl": "1400px",
-      },
+      padding: '1rem',
     },
     extend: {
       colors: {
-        border: "var(--color-border)", /* gray-200 */
-        input: "var(--color-input)", /* gray-200 */
-        ring: "var(--color-ring)", /* Deep professional trust */
-        background: "var(--color-background)", /* gray-50 */
-        foreground: "var(--color-foreground)", /* gray-900 */
+        background: { DEFAULT: 'var(--background)' },
+        foreground: { DEFAULT: 'var(--foreground)' },
         primary: {
-          DEFAULT: "var(--color-primary)", /* Deep professional trust */
-          foreground: "var(--color-primary-foreground)", /* white */
+          DEFAULT: 'var(--primary)',
+          foreground: 'var(--primary-foreground)',
         },
         secondary: {
-          DEFAULT: "var(--color-secondary)", /* Growth and prosperity */
-          foreground: "var(--color-secondary-foreground)", /* white */
-        },
-        destructive: {
-          DEFAULT: "var(--color-destructive)", /* red-600 */
-          foreground: "var(--color-destructive-foreground)", /* white */
-        },
-        muted: {
-          DEFAULT: "var(--color-muted)", /* gray-100 */
-          foreground: "var(--color-muted-foreground)", /* gray-600 */
+          DEFAULT: 'var(--secondary)',
+          foreground: 'var(--secondary-foreground)',
         },
         accent: {
-          DEFAULT: "var(--color-accent)", /* Action and urgency */
-          foreground: "var(--color-accent-foreground)", /* white */
+          DEFAULT: 'var(--accent)',
+          foreground: 'var(--accent-foreground)',
         },
-        popover: {
-          DEFAULT: "var(--color-popover)", /* white */
-          foreground: "var(--color-popover-foreground)", /* gray-900 */
+        muted: {
+          DEFAULT: 'var(--muted)',
+          foreground: 'var(--muted-foreground)',
         },
         card: {
-          DEFAULT: "var(--color-card)", /* white */
-          foreground: "var(--color-card-foreground)", /* gray-900 */
+          DEFAULT: 'var(--card)',
+          foreground: 'var(--card-foreground)',
         },
-        success: {
-          DEFAULT: "var(--color-success)", /* green-600 */
-          foreground: "var(--color-success-foreground)", /* white */
-        },
-        warning: {
-          DEFAULT: "var(--color-warning)", /* yellow-600 */
-          foreground: "var(--color-warning-foreground)", /* gray-900 */
-        },
-        error: {
-          DEFAULT: "var(--color-error)", /* red-600 */
-          foreground: "var(--color-error-foreground)", /* white */
-        },
-        brand: {
-          primary: {
-            DEFAULT: "var(--color-brand-primary)", /* blue-600 */
-            foreground: "var(--color-brand-primary-foreground)", /* white */
-          },
-          secondary: {
-            DEFAULT: "var(--color-brand-secondary)", /* emerald-600 */
-            foreground: "var(--color-brand-secondary-foreground)", /* white */
-          },
-          accent: {
-            DEFAULT: "var(--color-brand-accent)", /* amber-500 */
-            foreground: "var(--color-brand-accent-foreground)", /* gray-900 */
-          },
-        },
-        text: {
-          primary: "var(--color-text-primary)", /* slate-800 */
-          secondary: "var(--color-text-secondary)", /* slate-600 */
-          tertiary: "var(--color-text-tertiary)", /* slate-500 */
-        },
-        surface: {
-          DEFAULT: "var(--color-surface)", /* slate-50 */
-          foreground: "var(--color-surface-foreground)", /* slate-800 */
-        },
+        border: 'var(--border)',
+        input: 'var(--input)',
+        ring: 'var(--ring)',
       },
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        DEFAULT: 'var(--radius)',
+        xl: 'calc(var(--radius) * 1.5)',
+        '2xl': 'calc(var(--radius) * 2)',
+        '3xl': 'calc(var(--radius) * 3)',
+        '4xl': 'calc(var(--radius) * 4)',
       },
       fontFamily: {
-        poppins: ['Poppins', 'sans-serif'],
-        source: ['Source Sans Pro', 'sans-serif'],
-        nunito: ['Nunito Sans', 'sans-serif'],
-        merriweather: ['Merriweather', 'serif'],
-        inter: ['Inter', 'sans-serif'],
+        sans: ['var(--font-sans)', 'sans-serif'],
+        serif: ['var(--font-serif)', 'serif'],
       },
       keyframes: {
-        "accordion-down": {
-          from: { height: "0" },
-          to: { height: "var(--radix-accordion-content-height)" },
+        fadeInUp: {
+          from: { opacity: '0', transform: 'translateY(24px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
         },
-        "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-8px)' },
         },
-        "pulse-scale": {
-          "0%, 100%": { transform: "scale(1)" },
-          "50%": { transform: "scale(1.1)" },
+        shimmer: {
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
         },
-        "fade-in": {
-          "0%": { opacity: "0", transform: "translateY(10px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" },
+        pulse_glow: {
+          '0%, 100%': { boxShadow: '0 0 20px rgba(232,184,75,0.2)' },
+          '50%': { boxShadow: '0 0 40px rgba(232,184,75,0.5)' },
+        },
+        rotateSlow: {
+          from: { transform: 'rotate(0deg)' },
+          to: { transform: 'rotate(360deg)' },
         },
       },
       animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
-        "pulse-scale": "pulse-scale 3s ease-in-out infinite",
-        "fade-in": "fade-in 0.3s ease-out",
-      },
-      boxShadow: {
-        'brand': '0 4px 12px rgba(27, 75, 115, 0.15)',
-        'brand-lg': '0 10px 24px rgba(27, 75, 115, 0.2)',
+        fadeInUp: 'fadeInUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards',
+        float: 'float 4s ease-in-out infinite',
+        shimmer: 'shimmer 3s linear infinite',
+        pulse_glow: 'pulse_glow 2.5s ease-in-out infinite',
+        rotateSlow: 'rotateSlow 20s linear infinite',
       },
     },
   },
-  plugins: [],
-}
+  plugins: [require('@tailwindcss/typography')],
+};
