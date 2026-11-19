@@ -4,8 +4,8 @@ import AppImage from '@/components/ui/AppImage';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 
 const pillars = [
-  { name: 'Esencia Impresiones', href: '/esencia-impresiones', image: '/assets/images/esencia-impresiones.webp' },
   { name: 'Esencia Films', href: '/esencia-film', image: '/assets/images/esencia-film.webp' },
+  { name: 'Esencia Impresiones', href: '/esencia-impresiones', image: '/assets/images/esencia-impresiones.webp' },
   { name: 'Esencia Digital', href: '/esencia-digital', image: '/assets/images/esencia-digital.webp' },
   { name: 'Esencia Vallas', href: '/esencia-vallas', image: '/assets/images/esencia-vallas.webp' },
 ];
